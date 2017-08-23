@@ -67,22 +67,6 @@ def generate_data(data, samples, targeted=True, start=0, inception=False):
 if __name__ == "__main__":
     with tf.Session() as sess:
         data, model =  MNIST(), MNISTModel("models/mnist", sess)
-        attack = CarliniL2(sess, model, batch_size=9, max_iterations=1000, confidence=0)
-
-        inputs, targets = generate_data(data, samples=1, targeted=True,
-                                        start=0, inception=False)
-        timestart = time.time()
-        adv = attack.attack(inputs, targets)
-        timeend = time.time()
-        
-        print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
-
-        for i in range(len(adv)):
-            print("Valid:")
-            show(inputs[i])
-            print("Adversarial:")
-            show(adv[i])
-            
-            print("Classification:", model.model.predict(adv[i:i+1]))
-
-            print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
+        X_test = data.test_data
+        y_test = data.test_labels
+        score = model.evaluate(X_test, y_test)

@@ -120,5 +120,11 @@ class CIFARModel:
 
     def predict(self, data):
         return self.model(data)
-        
     
+    def evaluate(self, test_data, test_labels):
+        self.model.compile(optimizer='adam', loss='categorical_crossentropy',
+                  metrics=['accuracy'])
+        print('\nTest against clean data')
+        score = self.model.evaluate(test_data, test_labels)
+        print('\nloss: {0:.4f} acc: {1:.4f}'.format(score[0], score[1]))
+
