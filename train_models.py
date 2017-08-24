@@ -123,4 +123,4 @@ if not os.path.isdir('models'):
     os.makedirs('models')
 
 train(CIFAR(), "models/cifar", [64, 64, 128, 128, 256, 256], num_epochs=50)
-train(MNIST(), "models/mnist", [32, 32, 64, 64, 200, 200], num_epochs=50)
+#train(MNIST(), "models/mnist", [32, 32, 64, 64, 200, 200], num_epochs=50)

@@ -20,7 +20,7 @@ from attacks.li_attack import CarliniLi
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_integer('batch_size', 100, 'How many train steps')
-tf.app.flags.DEFINE_string('dataset', '', required=True, 'How many train steps')
+tf.app.flags.DEFINE_string('dataset', '', 'How many train steps')
 
 def perform_attack(attack, data, labels, sess):
     nb_sample = data.shape[0]
@@ -41,7 +41,7 @@ def main(_):
     with tf.Session() as sess:
         if FLAGS.dataset == 'MNIST':
             data, model =  MNIST(), MNISTModel("models/mnist", sess)
-        elif FLAGS.datset == 'Cifar':
+        elif FLAGS.dataset == 'Cifar':
             data, model =  CIFAR(), CIFARModel("models/cifar", sess)
 
         attack = CarliniL2(sess, model, batch_size=FLAGS.batch_size, max_iterations=1000, confidence=0)
@@ -53,8 +53,8 @@ def main(_):
         X_adv_test = perform_attack(attack, test_data, test_labels, sess)
         X_adv_train = perform_attack(attack, train_data, train_labels, sess)
 
-        np.save('adversarial_outputs/fgsm_train_' + FLAGS.dataset.lower() + '.npy', X_adv_train)
-        np.save('adversarial_outputs/fgsm_test_' + FLAGS.dataset.lower() + '.npy', X_adv_test)
+        np.save('adversarial_outputs/carlini_train_' + FLAGS.dataset.lower() + '.npy', X_adv_train)
+        np.save('adversarial_outputs/carlini_test_' + FLAGS.dataset.lower() + '.npy', X_adv_test)
         print("Legit/Adversarial training set")
         model.evaluate(train_data, train_labels)
         model.evaluate(X_adv_train, train_labels)
