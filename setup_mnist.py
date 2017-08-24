@@ -86,17 +86,18 @@ class MNISTModel:
         model.add(Dense(200))
         model.add(Activation('relu'))
         model.add(Dense(10))
+        model.add(Activation('softmax'))
         model.load_weights(restore)
 
         self.model = model
 
     def predict(self, data):
-        return self.model(data)
+        ybar = self.model(data)
+        logits, = ybar.op.inputs
+        return ybar, logits
 
     def evaluate(self, test_data, test_labels):
         self.model.compile(optimizer='adam', loss='categorical_crossentropy',
                   metrics=['accuracy'])
-        print('\nTest against clean data')
         score = self.model.evaluate(test_data, test_labels)
         print('\nloss: {0:.4f} acc: {1:.4f}'.format(score[0], score[1]))
-

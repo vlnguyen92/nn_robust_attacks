@@ -1,5 +1,6 @@
 __pycache__
 cifar-10-batches-bin/
+adversarial_outputs
 data/
 models/
 cifar-data.tar.gz

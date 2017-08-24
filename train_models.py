@@ -51,6 +51,7 @@ def compile_model(data, params,
     model.add(Dense(params[5]))
     model.add(Activation('relu'))
     model.add(Dense(10))
+    model.add(Activation('softmax'))
     
     if init != None:
         model.load_weights(init)
@@ -61,7 +62,7 @@ def compile_model(data, params,
 
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     
-    model.compile(loss=fn,
+    model.compile(loss='categorical_crossentropy',
                   optimizer=sgd,
                   metrics=['accuracy'])
 
@@ -81,19 +82,10 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
               nb_epoch=num_epochs,
               shuffle=True)
     
-
     if file_name != None:
         model.save(file_name)
 
     return model
-
-def evaluate(data, params, train_temp = 1, init=None)::
-    model = compile_model(data = data,
-                          params = params,
-                          train_temp = train_temp,
-                          init = init,
-                          mode = 'eval')
-    model.evaluate(data.test_data, data.test_labels)
 
 def train_distillation(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1):
     """

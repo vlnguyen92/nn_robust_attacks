@@ -13,7 +13,7 @@ BINARY_SEARCH_STEPS = 9  # number of times to adjust the constant with binary se
 MAX_ITERATIONS = 10000   # number of iterations to perform gradient descent
 ABORT_EARLY = True       # if we stop improving, abort gradient descent early
 LEARNING_RATE = 1e-2     # larger values converge faster to less accurate results
-TARGETED = True          # should we target one specific class? or just be wrong?
+TARGETED = False         # should we target one specific class? or just be wrong?
 CONFIDENCE = 0           # how strong the adversarial example should be
 INITIAL_CONST = 1e-3     # the initial constant c to pick as a first guess
 
@@ -80,7 +80,7 @@ class CarliniL2:
         self.newimg = tf.tanh(modifier + self.timg)/2
         
         # prediction BEFORE-SOFTMAX of the model
-        self.output = model.predict(self.newimg)
+        _, self.output = model.predict(self.newimg)
         
         # distance to the input data
         self.l2dist = tf.reduce_sum(tf.square(self.newimg-tf.tanh(self.timg)/2),[1,2,3])
@@ -103,7 +103,7 @@ class CarliniL2:
         
         # Setup the adam optimizer and keep track of variables we're creating
         start_vars = set(x.name for x in tf.global_variables())
-        optimizer = tf.train.AdamOptimizer(self.LEARNING_RATE)
+        optimizer = tf.train.GradientDescentOptimizer(self.LEARNING_RATE)
         self.train = optimizer.minimize(self.loss, var_list=[modifier])
         end_vars = tf.global_variables()
         new_vars = [x for x in end_vars if x.name not in start_vars]
